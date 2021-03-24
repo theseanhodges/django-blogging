@@ -3,15 +3,25 @@
 <html>
   <head>
     <title>My Django Blog</title>
-    <link type="text/css" rel="stylesheet" href="{% static 'django_blog.css' %}">
+    <link type="text/css" rel="stylesheet" href="{% static 'django_blog.css' %}" />
   </head>
   <body>
-    <div id="container">
-      <div id="content">
-      {% block content %}
-       [content will go here]
-      {% endblock %}
+      <div id="header">
+          <ul id="control-bar">
+              {% if user.is_authenticated %}
+              {% if user.is_staff %}<li /><a href="{% url 'admin:index' %}">admin</a>{% endif %}
+              <li /><a href="{% url 'logout' %}">logout</a>
+              {% else %}
+              <li /><a href="{% url 'login' %}">login</a>
+              {% endif %}
+          </ul>
       </div>
+      <div id="container">
+        <div id="content">
+            {% block content %}
+            [content will go here]
+            {% endblock %}
+        </div>
     </div>
   </body>
 </html>
