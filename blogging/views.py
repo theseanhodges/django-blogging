@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
 from django.template import loader
@@ -39,6 +40,7 @@ def add_view(request):
         if form.is_valid():
             model_instance = form.save(commit=False)
             model_instance.author = request.user
+            model_instance.published_date = datetime.datetime.utcnow().replace(tzinfo=timezone.utc) if form.cleaned_data.get('publish') else None
             model_instance.save()
             return redirect('/')
     form = PostForm()
