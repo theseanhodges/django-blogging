@@ -35,16 +35,18 @@ def detail_view(request, post_id):
     return render(request, 'blogging/detail.html', context)
 
 def add_view(request):
-    if request.method == 'POST':
-        form = PostForm(request.POST)
-        if form.is_valid():
-            model_instance = form.save(commit=False)
-            model_instance.author = request.user
-            model_instance.published_date = datetime.datetime.utcnow().replace(tzinfo=timezone.utc) if form.cleaned_data.get('publish') else None
-            model_instance.save()
-            return redirect('/')
-    form = PostForm()
-    context = {
-        'form': form
-    }
-    return render(request, 'blogging/post.html', context)
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = PostForm(request.POST)
+            if form.is_valid():
+                model_instance = form.save(commit=False)
+                model_instance.author = request.user
+                model_instance.published_date = datetime.datetime.utcnow().replace(tzinfo=timezone.utc) if form.cleaned_data.get('publish') else None
+                model_instance.save()
+                return redirect('/')
+        form = PostForm()
+        context = {
+            'form': form
+        }
+        return render(request, 'blogging/post.html', context)
+    return redirect('/')
