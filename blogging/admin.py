@@ -11,5 +11,8 @@ class PostAdmin(admin.ModelAdmin):
     model = Post
     filter_horizontal = ('categories',)
 
+class CategoryAdmin(admin.ModelAdmin):
+    exclude = ('posts',)
+
 admin.site.register(Post, PostAdmin)
-admin.site.register(Category)
+admin.site.register(Category, CategoryAdmin)
