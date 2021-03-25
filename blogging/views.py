@@ -1,7 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
 from django.template import loader
 from blogging.models import Post
+from django import forms
+from django.utils import timezone
+from blogging.forms import PostForm
 
 def test_view(request, *args, **kwargs):
     body = "Testing view\n\n"
@@ -29,3 +32,17 @@ def detail_view(request, post_id):
         'post': post
     }
     return render(request, 'blogging/detail.html', context)
+
+def add_view(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            model_instance = form.save(commit=False)
+            model_instance.author = request.user
+            model_instance.save()
+            return redirect('/')
+    form = PostForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'blogging/post.html', context)
